@@ -1,6 +1,6 @@
 <div class='nav'>
-    <a href='.'>home</a>
-    <a href='page'>page</a>
+    <a href='/'>home</a>
+    <a href='/page'>page</a>
 </div>
 
 <style>
