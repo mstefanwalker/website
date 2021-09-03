@@ -27,7 +27,7 @@
     function formatTimestamp(timestamp) {
         if (timestamps && timestamps.length <= 5) { setFormatted(null); return; }
         let random = Math.random();
-        if (random > 0.995 && timestamps && timestamps.length <= 20) { setFormatted("oyster"); return; }
+        if (random > 0.995 && timestamps && timestamps.length >= 20) { setFormatted("oyster"); return; }
         if (random > 0.970) { setFormatted(new Date(timestamp * 1000).toString().split("(")[0]); return; }
         if (random > 0.940) { setFormatted(new Date(timestamp * 1000).toLocaleString('en-US')); return; }
         if (random > 0.890) { setFormatted(primeFactors(timestamp).join(' * ')); return; }
