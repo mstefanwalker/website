@@ -1,6 +1,7 @@
 <div class='nav'>
     <a href='/'>home</a>
     <a href='/page'>page</a>
+    <a href='/beat'>beat</a>
 </div>
 
 <style>
