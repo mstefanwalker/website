@@ -13,14 +13,16 @@
     .crop {
         margin-left: auto;
         margin-right: auto;
-        width: 550px;
+        width: 305px;
         height: 400px;
         overflow: hidden;
     }
     .oyster {
         display: block;
-        margin: -130px 0 0 8px;
         width: 550px;
         height: 440px;
+        margin-left: calc(50% + 8px);
+        margin-top: -130px;
+        transform: translateX(-50%);
     }
 </style>
