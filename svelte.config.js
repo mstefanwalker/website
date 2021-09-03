@@ -4,8 +4,10 @@ import adapter from '@sveltejs/adapter-static';
 const config = {
 	kit: {
 		adapter: adapter({
-			pages: 'docs',
-			assets: 'docs',
+			// build into a sibling project so that this repo can remain clean for git commits
+			// the sibling project may be committed seperately for GitHub Pages
+			pages: '../website-build/docs',
+			assets: '../website-build/docs',
 			fallback: null,
 		}),
 		// hydrate the <div id="svelte"> element in src/app.html
