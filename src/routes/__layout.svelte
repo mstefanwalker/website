@@ -25,7 +25,7 @@
         font-family: sans-serif
     }
     :global(a) {
-        color: blue;
+        color: lightseagreen;
         text-decoration: none;
     }
 </style>
