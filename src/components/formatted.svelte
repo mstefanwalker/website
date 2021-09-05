@@ -61,10 +61,10 @@
         margin-left: 5px;
     }
     .prime {
-        color: lightseagreen;
+        color: rgb(0, 167, 218);
     }
     .oyster {
-        color: goldenrod;
+        color: rgb(125, 10, 233);
     }
     .loading {
         color: grey;
