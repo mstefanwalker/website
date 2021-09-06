@@ -3,14 +3,6 @@
 
     export let timestamp;
 
-    async function primeFactors(n) {
-        return new Promise((resolve, reject) => {
-            var worker = new Worker('/workers/factorization.js');
-            worker.onmessage = (event) => resolve(event.data);
-            worker.postMessage(n);
-        });
-    }
-
     $: done = false;
     let formatted = null;
     let prime = false;
@@ -23,15 +15,14 @@
         oyster = oy;
     }
 
-    function setFormattedPrimeAsync() {
-        primeFactors(timestamp).then((value) => setFormatted({text: value.join(' * '), pr: value.length == 1}));
-    }
-
     function formatTimestamp(timestamp) {
         let random = Math.random();
         if (random > 0.995) { setFormatted({text: "oyster", oy: true}); return; }
         if (random > 0.940) { setFormatted({text: new Date(timestamp * 1000).toLocaleString('en-US')}); return; }
-        if (random > 0.700) { setFormattedPrimeAsync(); return; }
+        if (random > 0.800) { window.factorizer.run({n: timestamp}).then(value => setFormatted({
+            text: value.factors.join(' * '),
+            pr: value.factors.length == 1,
+        })); return; }
         setFormatted({text: null}); return;
     }
 

@@ -32,8 +32,8 @@
     {#each timestamps as timestamp, index (timestamp.id)}
         <div
             class='timestamp'
-            in:fly|local={{ x: timestamp.flyX, duration: 250, delay: 240 }}
-            out:fly|local={{ x: timestamp.flyX * 0.15, duration: 250, delay: 0 }}
+            in:fly|local={{ x: timestamp.flyX, duration: 220, delay: 240 }}
+            out:fly|local={{ x: timestamp.flyX * 0.15, duration: 220, delay: 0 }}
             animate:flip|local={{ duration: 200 }}>
             <Formatted timestamp={timestamp.time}/>
         </div>

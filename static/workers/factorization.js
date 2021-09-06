@@ -1,7 +1,7 @@
 onmessage = function(event) {
-    var n = event.data;
+    let n = event.data.n;
 
-    const factors = [];
+    let factors = [];
     let divisor = 2;
 
     while (n >= 2) {
@@ -12,5 +12,9 @@ onmessage = function(event) {
             divisor++;
         }
     }
-    postMessage(factors);
+    
+    postMessage({
+        id: event.data.id,
+        factors: factors,
+    });
 }
