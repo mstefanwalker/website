@@ -22,10 +22,6 @@
     }
 
     $: timestamps = addTimestamp($timestamp);
-
-
-    // need to triger a set of timestamps once when the store changes
-    // and once when a timestamp is removed from timestamps
 </script>
 
 <div id='timestamps'>
