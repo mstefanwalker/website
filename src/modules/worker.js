@@ -24,8 +24,17 @@ export class Pool {
 
     addJob(args, handler) {
         let sortedWorkers = [...this.workers].sort((a, b) => a.jobs.length - b.jobs.length);
-        console.log(`worker load: ${this.workers.map(w => w.status()).join('')}`);
+        console.log(`worker load: ${this.workers.map(w => w.statusChar()).join('')}`);
         sortedWorkers[0].startJob(args, handler);
+    }
+
+    status() {
+        let workers = []
+        for (let i = 0; i < this.workers.length; i++)
+            workers.push({id: i, ...this.workers[i].status()});
+        return {
+            workers: workers
+        }
     }
 }
 
@@ -59,6 +68,12 @@ class PoolWorker {
     }
 
     status() {
+        return {
+            numJobs: this.jobs.length,
+        }
+    }
+
+    statusChar() {
         if (this.jobs.length == 0) return '▁';
         if (this.jobs.length == 1) return '▃';
         if (this.jobs.length == 2) return '▅';

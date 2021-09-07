@@ -1,15 +1,16 @@
 <script>
+    import { browser } from '$app/env';
     import Formatted from '../components/formatted.svelte'
+    import Bar from '../components/bar.svelte'
     import { timestamp } from '../stores/timestamp';
     import { fly } from 'svelte/transition';
     import { flip } from 'svelte/animate';
 
-    const numTimestamps = 30;
+    const numTimestamps = 28;
 
     let flyX = 300;
     let id = 1;
 
-    let timestamps = [];
     function addTimestamp(timestamp) {
         // initialize and avoid first update caused by page load. Only add when $timestamp updates
         if (!timestamps) return [];
@@ -22,23 +23,43 @@
     }
 
     $: timestamps = addTimestamp($timestamp);
+    $: factorizerStatus = browser ? {...window.factorizer.status(), timestamp: $timestamp} : {workers: [], timestamp: $timestamp};
 </script>
+
+<div id='status'>
+    <div>
+        {#each factorizerStatus.workers as worker, index (worker.id)}
+            <span class='bars'>
+                <Bar current={worker.numJobs} max=3 />
+            </span>
+        {:else}
+            <span class='bars'>...</span>
+        {/each}
+    </div>
+</div>
 
 <div id='timestamps'>
     {#each timestamps as timestamp, index (timestamp.id)}
         <div
             class='timestamp'
-            in:fly|local={{ x: timestamp.flyX, duration: 220, delay: 240 }}
+            in:fly|local={{ x: timestamp.flyX, duration: 220, delay: 250 }}
             out:fly|local={{ x: timestamp.flyX * 0.15, duration: 220, delay: 0 }}
-            animate:flip|local={{ duration: 200 }}>
+            animate:flip|local={{ duration: 200 }}
+        >
             <Formatted timestamp={timestamp.time}/>
         </div>
     {/each}
 </div>
 
 <style>
-    #timestamps {
-        margin-top: 40px;
+    .bars {
+        display: inline-block;
+    }
+    .bars + .bars {
+        margin-left: 5px;
+    }
+    #timestamps, #status {
+        margin-top: 36px;
         text-align: center;
         width: 100%;
         margin-right: auto;

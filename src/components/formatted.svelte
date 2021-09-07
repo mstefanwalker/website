@@ -20,7 +20,7 @@
         if (random > 0.995) { setFormatted({text: "oyster", oy: true}); return; }
         if (random > 0.940) { setFormatted({text: new Date(timestamp * 1000).toLocaleString('en-US')}); return; }
         if (random > 0.800) { window.factorizer.run({n: timestamp}).then(value => setFormatted({
-            text: value.factors.join(' * '),
+            text: value.factors.join(' × '),
             pr: value.factors.length == 1,
         })); return; }
         setFormatted({text: null}); return;

@@ -18,5 +18,8 @@
     "prettier-plugin-svelte": "^2.2.0",
     "svelte": "^3.34.0"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "d3-interpolate": "^3.0.1"
+  }
 }
