@@ -1,7 +1,7 @@
 <script>
     import { browser } from '$app/env';
-    import Formatted from '../components/formatted.svelte'
-    import Bar from '../components/bar.svelte'
+    import Timestamp from '../components/timestamp.svelte'
+    import StatusBar from '../components/status_bar.svelte'
     import { timestamp } from '../stores/timestamp';
     import { fly } from 'svelte/transition';
     import { flip } from 'svelte/animate';
@@ -29,11 +29,11 @@
 <div id='status'>
     <div>
         {#each factorizerStatus.workers as worker, index (worker.id)}
-            <span class='bars'>
-                <Bar current={worker.numJobs} max=3 />
+            <span class='status bars'>
+                <StatusBar current={worker.numJobs} max=3 />
             </span>
         {:else}
-            <span class='bars'>...</span>
+            <span class='status bars'>...</span>
         {/each}
     </div>
 </div>
@@ -46,16 +46,16 @@
             out:fly|local={{ x: timestamp.flyX * 0.15, duration: 220, delay: 0 }}
             animate:flip|local={{ duration: 200 }}
         >
-            <Formatted timestamp={timestamp.time}/>
+            <Timestamp timestamp={timestamp.time}/>
         </div>
     {/each}
 </div>
 
 <style>
-    .bars {
+    .status.bars {
         display: inline-block;
     }
-    .bars + .bars {
+    .status.bars + .status.bars {
         margin-left: 5px;
     }
     #timestamps, #status {
