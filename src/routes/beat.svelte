@@ -18,12 +18,28 @@
         setTimeout(() => {
             if (timestamps.length >= numTimestamps) timestamps = timestamps.slice(0, -1);
         }, 680);
+
+        let entry = {
+            id: id++,
+            time: timestamp,
+            flyX: flyX *= -1,
+            factors: null,
+            oyster: Math.random() > 0.995
+        }
+
+        if (browser) {
+            window.factorizer.run({n: timestamp}).then(value => {
+                entry.factors = value.factors;
+                timestamps = timestamps; // trigger an update!
+            });
+        }
+
         // then add to the top so the list slides down!
-        return [{id: id++, time: timestamp, flyX: flyX *= -1}, ...timestamps];
+        return [entry, ...timestamps];
     }
 
-    $: timestamps = addTimestamp($timestamp);
     $: factorizerStatus = browser ? {...window.factorizer.status(), timestamp: $timestamp} : {workers: [], timestamp: $timestamp};
+    $: timestamps = addTimestamp($timestamp);
 </script>
 
 <div id='status'>
@@ -46,7 +62,7 @@
             out:fly|local={{ x: timestamp.flyX * 0.15, duration: 220, delay: 0 }}
             animate:flip|local={{ duration: 200 }}
         >
-            <Timestamp timestamp={timestamp.time}/>
+            <Timestamp timestamp={timestamp.time} factors={timestamp.factors} oyster={timestamp.oyster}/>
         </div>
     {/each}
 </div>

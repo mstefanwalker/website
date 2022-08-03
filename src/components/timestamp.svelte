@@ -2,51 +2,30 @@
     import { fade } from 'svelte/transition';
 
     export let timestamp;
+    export let factors;
+    export let oyster;
 
-    $: done = false;
-    let formatted = null;
-    let prime = false;
-    let oyster = false;
-
-    function setFormatted({text, pr = false, oy = false}) {
-        done = true;
-        formatted = text;
-        prime = pr;
-        oyster = oy;
-    }
-
-    function formatTimestamp(timestamp) {
-        let random = Math.random();
-        if (random > 0.995) { setFormatted({text: "oyster", oy: true}); return; }
-        if (random > 0.940) { setFormatted({text: new Date(timestamp * 1000).toLocaleString('en-US')}); return; }
-        if (random > 0.800) { window.factorizer.run({n: timestamp}).then(value => setFormatted({
-            text: value.factors.join(' × '),
-            pr: value.factors.length == 1,
-        })); return; }
-        setFormatted({text: null}); return;
-    }
-
-    setTimeout(() => formatTimestamp(timestamp), 10);
+    $: elements = [
+        {id: 1, show: !!timestamp, text: timestamp, style: 'timestamp'},
+        {id: 2, show: !!factors, text: factors ? factors.join(' × ') : '...', style: factors && factors.length == 1 ? 'prime' : 'factors'},
+        {id: 3, show: !!oyster, text: oyster ? 'oyster' : '', style: 'oyster'}
+    ];
 </script>
 
 <div id='formatted'>
-    {#if done}
-        <div in:fade|local={{ duration: 400, delay: 300 }}>
-            <span class:detail={formatted}>{timestamp}</span>
-            {#if formatted}
-                <span class='formatted' class:prime={prime} class:oyster={oyster}>{formatted}</span>
-            {/if}
-        </div>
-    {:else}
-        <div class='loading'>
-            ...
-        </div>
-    {/if}
+    {#each elements as {id, show, text, style}, index (id)}
+        {#if show}
+            <span class={style} in:fade|local={{ duration: 400, delay: 300 }} out:fade|local={{ duration: 300 }}>
+                {text}
+            </span>
+        {/if}
+    {/each}
 </div>
 
 <style>
-    .detail {
-        color: lightgrey;
+    .timestamp {
+        color: rgb(192, 192, 192);
+        margin-right: 10px
     }
     .formatted {
         margin-left: 5px;
@@ -61,9 +40,11 @@
         color: grey;
     }
     #formatted {
-        text-align: center;
-        width: fit-content;
+        text-align: left;
+        width: 300px;
         margin-right: auto;
         margin-left: auto;
+        overflow: visible;
+        white-space: nowrap;
     }
 </style>
