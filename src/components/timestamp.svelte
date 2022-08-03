@@ -15,7 +15,11 @@
 <div id='formatted'>
     {#each elements as {id, show, text, style}, index (id)}
         {#if show}
-            <span class={style} in:fade|local={{ duration: 400, delay: 300 }} out:fade|local={{ duration: 300 }}>
+            <span
+                class={style}
+                in:fade|local={{ duration: 400, delay: 300 }}
+                out:fade|local={{ duration: 300 }}
+            >
                 {text}
             </span>
         {/if}

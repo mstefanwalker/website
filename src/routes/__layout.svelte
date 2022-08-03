@@ -13,7 +13,7 @@
     // solved by checking the browser first, but solving the build
     // errors are tough.
     if (browser) {
-        let numWorkers = 4;
+        let numWorkers = 12;
         let workers = [];
         for (let i = 0; i < numWorkers; i++)
             workers.push(new Worker('/workers/factorization.js'));

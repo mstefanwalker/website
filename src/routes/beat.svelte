@@ -4,6 +4,7 @@
     import StatusBar from '../components/status_bar.svelte'
     import { timestamp } from '../stores/timestamp';
     import { fly } from 'svelte/transition';
+    import { fade } from 'svelte/transition';
     import { flip } from 'svelte/animate';
 
     const numTimestamps = 28;
@@ -40,12 +41,18 @@
 
     $: factorizerStatus = browser ? {...window.factorizer.status(), timestamp: $timestamp} : {workers: [], timestamp: $timestamp};
     $: timestamps = addTimestamp($timestamp);
+    $: activeWorkers = factorizerStatus.workers.filter(worker => worker.id < 4 || worker.numJobs > 0)
 </script>
 
 <div id='status'>
     <div>
-        {#each factorizerStatus.workers as worker, index (worker.id)}
-            <span class='status bars'>
+        {#each activeWorkers as worker, index (worker.id)}
+            <span
+                class='status bars'
+                animate:flip|local={{ duration: 200, delay: 100 }}
+                in:fade|local={{ duration: 400, delay: 300 }}
+                out:fade|local={{ duration: 100 }}
+            >
                 <StatusBar current={worker.numJobs} max=3 />
             </span>
         {:else}
