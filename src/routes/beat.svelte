@@ -3,45 +3,57 @@
     import Timestamp from '../components/timestamp.svelte'
     import StatusBar from '../components/status_bar.svelte'
     import { timestamp } from '../stores/timestamp';
-    import { fly } from 'svelte/transition';
     import { fade } from 'svelte/transition';
     import { flip } from 'svelte/animate';
 
     const numTimestamps = 28;
+    const numSpaces = 3;
 
-    let flyX = 300;
-    let id = 1;
+    let timestampUpdatePosition = 0;
+    let timestampsInitialized = false;
 
-    function addTimestamp(timestamp) {
-        // initialize and avoid first update caused by page load. Only add when $timestamp updates
-        if (!timestamps) return [];
-        // if removing last from list, queue after flip animation has completed below
-        setTimeout(() => {
-            if (timestamps.length >= numTimestamps) timestamps = timestamps.slice(0, -1);
-        }, 680);
+    $: factorizerStatus = browser ? {...window.factorizer.status(), timestamp: $timestamp} : {workers: [], timestamp: $timestamp};
+    $: timestamps = timestampsInitialized ? updateTimestamps($timestamp) : initializeTimestamps(numTimestamps);
+    $: activeWorkers = factorizerStatus.workers.filter(worker => worker.id < 4 || worker.numJobs > 0)
 
+    function updateTimestamps(timestamp) {
         let entry = {
-            id: id++,
+            show: true,
             time: timestamp,
-            flyX: flyX *= -1,
             factors: null,
             oyster: Math.random() > 0.995
         }
-
+        timestamps[timestampUpdatePosition] = entry;
         if (browser) {
             window.factorizer.run({n: timestamp}).then(value => {
                 entry.factors = value.factors;
-                timestamps = timestamps; // trigger an update!
+                timestamps = timestamps;
             });
         }
-
-        // then add to the top so the list slides down!
-        return [entry, ...timestamps];
+        for (let i = 0; i < numSpaces; i++) {    
+            let offset = i + 1;
+            let spacePosition = (timestampUpdatePosition + offset) % timestamps.length;
+            timestamps[spacePosition].show = false;
+        }
+        let nextPosition = (timestampUpdatePosition + 1) % timestamps.length;
+        timestampUpdatePosition = nextPosition;
+        return timestamps;
     }
 
-    $: factorizerStatus = browser ? {...window.factorizer.status(), timestamp: $timestamp} : {workers: [], timestamp: $timestamp};
-    $: timestamps = addTimestamp($timestamp);
-    $: activeWorkers = factorizerStatus.workers.filter(worker => worker.id < 4 || worker.numJobs > 0)
+    function initializeTimestamps(numTimestamps) {
+        let timestamps = []
+        for (let i = 0; i < numTimestamps; i++) {
+            timestamps.push({
+                show: false,
+                time: null,
+                factors: null,
+                oyster: false
+            });
+        }
+        timestamps = timestamps;
+        timestampsInitialized = true;
+        return timestamps;
+    }
 </script>
 
 <div id='status'>
@@ -49,9 +61,9 @@
         {#each activeWorkers as worker, index (worker.id)}
             <span
                 class='status bars'
-                animate:flip|local={{ duration: 200, delay: 100 }}
+                animate:flip|local={{ duration: 200, delay: 200 }}
                 in:fade|local={{ duration: 400, delay: 300 }}
-                out:fade|local={{ duration: 100 }}
+                out:fade|local={{ duration: 200 }}
             >
                 <StatusBar current={worker.numJobs} max=3 />
             </span>
@@ -62,15 +74,21 @@
 </div>
 
 <div id='timestamps'>
-    {#each timestamps as timestamp, index (timestamp.id)}
-        <div
-            class='timestamp'
-            in:fly|local={{ x: timestamp.flyX, duration: 220, delay: 250 }}
-            out:fly|local={{ x: timestamp.flyX * 0.15, duration: 220, delay: 0 }}
-            animate:flip|local={{ duration: 200 }}
-        >
-            <Timestamp timestamp={timestamp.time} factors={timestamp.factors} oyster={timestamp.oyster}/>
-        </div>
+    {#each timestamps as {show, time, factors, oyster}}
+        {#if show}
+            <div
+                class='timestamp'
+                in:fade|local={{ duration: 300 }}
+            >
+                <Timestamp timestamp={time} factors={factors} oyster={oyster}/>
+            </div>
+        {:else}
+            <div 
+                class='timestamp'
+            >
+                &nbsp;
+            </div>
+        {/if}
     {/each}
 </div>
 

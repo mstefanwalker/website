@@ -6,18 +6,33 @@
     export let oyster;
 
     $: elements = [
-        {id: 1, show: !!timestamp, text: timestamp, style: 'timestamp'},
-        {id: 2, show: !!factors, text: factors ? factors.join(' × ') : '...', style: factors && factors.length == 1 ? 'prime' : 'factors'},
-        {id: 3, show: !!oyster, text: oyster ? 'oyster' : '', style: 'oyster'}
+        {
+            id: 1,
+            show: !!timestamp,
+            text: timestamp,
+            style: 'timestamp'
+        },
+        {
+            id: 2,
+            show: !!factors,
+            text: factors ? factors.join(' × ') : '...',
+            style: factors && factors.length == 1 ? 'prime' : 'factors'
+        },
+        {
+            id: 3,
+            show: !!oyster,
+            text: oyster ? 'oyster' : '',
+            style: 'oyster'
+        }
     ];
 </script>
 
 <div id='formatted'>
-    {#each elements as {id, show, text, style}, index (id)}
+    {#each elements as {id, show, text, style}}
         {#if show}
             <span
-                class={style}
-                in:fade|local={{ duration: 400, delay: 300 }}
+                class='line {style}'
+                in:fade|local={{ duration: 400 }}
                 out:fade|local={{ duration: 300 }}
             >
                 {text}
@@ -27,17 +42,17 @@
 </div>
 
 <style>
-    .timestamp {
+    .line {
+        margin-right: 10px;
+    }
+    .line.timestamp {
         color: rgb(192, 192, 192);
-        margin-right: 10px
+        margin-right: 10px;
     }
-    .formatted {
-        margin-left: 5px;
-    }
-    .prime {
+    .line.prime {
         color: rgb(0, 167, 218);
     }
-    .oyster {
+    .line.oyster {
         color: rgb(125, 10, 233);
     }
     .loading {
@@ -45,7 +60,7 @@
     }
     #formatted {
         text-align: left;
-        width: 300px;
+        width: 350px;
         margin-right: auto;
         margin-left: auto;
         overflow: visible;
