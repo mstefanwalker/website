@@ -5,45 +5,85 @@
     export let factors;
     export let oyster;
 
-    $: elements = [
-        {
-            id: 1,
-            show: !!timestamp,
-            text: timestamp,
-            style: factors && factors.length == 1 ? 'prime' : 'timestamp'
-        },
-        {
-            id: 2,
-            show: !!factors,
-            text: factors ? factors.join(' × ') : '...',
-            style: factors && factors.length == 1 ? 'prime' : 'factors'
-        },
-        {
-            id: 3,
-            show: !!oyster,
-            text: oyster ? 'oyster' : '',
-            style: 'oyster'
+    $: prime = factors ? factors.length == 1 : false;
+    $: exponents = factors ? calculateExponents(factors) : {};
+    $: uniqueFactors = factors ? unique(factors) : [];
+
+    function unique(array) {
+        return array.filter((value, index, self) => self.indexOf(value) === index);
+    }
+
+    function calculateExponents(factors) {
+        let exponents = {};
+        for (let factor of factors) {
+            if (exponents[factor]) {
+                exponents[factor]++;
+            } else {
+                exponents[factor] = 1;
+            }
         }
-    ];
+        return exponents;
+    }
 </script>
 
 <div id='formatted'>
-    {#each elements as {id, show, text, style}}
-        {#if show}
-            <span
-                class='line {style}'
-                in:fade|local={{ duration: 400 }}
-                out:fade|local={{ duration: 300 }}
-            >
-                {text}
-            </span>
-        {/if}
-    {/each}
+    {#if timestamp}
+        <span
+            class='line {prime ? 'prime' : 'timestamp'}'
+            in:fade|local={{ duration: 400 }}
+            out:fade|local={{ duration: 300 }}
+        >
+            {timestamp}
+        </span>
+    {/if}
+    {#if factors}
+        <span
+            class='line {prime ? 'prime' : 'factors'}'
+            in:fade|local={{ duration: 400 }}
+            out:fade|local={{ duration: 300 }}
+        >
+            {#each uniqueFactors as factor}
+                {factor}
+                {#if exponents[factor] > 1}
+                    <sup class='superscript'>
+                        {exponents[factor]}
+                    </sup>
+                {/if}
+                {#if factor !== uniqueFactors[uniqueFactors.length - 1]}
+                    ×&nbsp;
+                {/if}
+            {/each}
+        </span>
+    {:else}
+        <span 
+            class='loading'
+            in:fade|local={{ duration: 400 }}
+        >
+            ― × ― × ―
+        </span>
+    {/if}
+    {#if oyster}
+        <span
+            class='line oyster'
+            in:fade|local={{ duration: 400 }}
+            out:fade|local={{ duration: 300 }}
+        >
+            oyster
+        </span>
+    {/if}
 </div>
 
 <style>
+    .superscript {
+        color: lightseagreen;
+        margin-left: -0.15em;
+        vertical-align: baseline;
+        position: relative;
+        top: -0.4em;
+    }
     .line {
         margin-right: 10px;
+        height: 100px;
     }
     .line.timestamp {
         color: rgb(192, 192, 192);
@@ -56,7 +96,7 @@
         color: rgb(125, 10, 233);
     }
     .loading {
-        color: grey;
+        color: rgb(226, 226, 226);
     }
     #formatted {
         text-align: left;
