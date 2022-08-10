@@ -9,7 +9,10 @@ const config = {
 			pages: '../website-build/docs',
 			assets: '../website-build/docs',
 			fallback: null,
-		})
+		}),
+		prerender: {
+			default: true
+		}
 	}
 };
 
