@@ -10,7 +10,7 @@
             id: 1,
             show: !!timestamp,
             text: timestamp,
-            style: 'timestamp'
+            style: factors && factors.length == 1 ? 'prime' : 'timestamp'
         },
         {
             id: 2,
