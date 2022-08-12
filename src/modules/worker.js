@@ -24,7 +24,6 @@ export class Pool {
 
     addJob(args, handler) {
         let sortedWorkers = [...this.workers].sort((a, b) => a.jobs.length - b.jobs.length);
-        console.log(`worker load: ${this.workers.map(w => w.statusChar()).join('')}`);
         sortedWorkers[0].startJob(args, handler);
     }
 
