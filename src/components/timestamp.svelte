@@ -3,11 +3,20 @@
 
     export let timestamp;
     export let factors;
-    export let oyster;
 
     $: prime = factors ? factors.length == 1 : false;
     $: exponents = factors ? calculateExponents(factors) : {};
     $: uniqueFactors = factors ? unique(factors) : [];
+    $: oyster = mapContainsValueOrLarger(exponents, 8);    
+
+    function mapContainsValueOrLarger(map, value) {
+        for (let key in map) {
+            if (map[key] >= value) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     function unique(array) {
         return array.filter((value, index, self) => self.indexOf(value) === index);

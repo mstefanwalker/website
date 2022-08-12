@@ -20,9 +20,8 @@
         let entry = {
             show: true,
             time: timestamp,
-            factors: null,
-            oyster: Math.random() > 0.995
-        }
+            factors: null
+        };
         timestamps[timestampUpdatePosition] = entry;
         if (browser) {
             window.factorizer.run({n: timestamp}).then(value => {
@@ -46,8 +45,7 @@
             timestamps.push({
                 show: false,
                 time: null,
-                factors: null,
-                oyster: false
+                factors: null
             });
         }
         timestamps = timestamps;
@@ -74,13 +72,13 @@
 </div>
 
 <div id='timestamps'>
-    {#each timestamps as {show, time, factors, oyster}}
+    {#each timestamps as {show, time, factors}}
         {#if show}
             <div
                 class='timestamp'
                 in:fade|local={{ duration: 300 }}
             >
-                <Timestamp timestamp={time} factors={factors} oyster={oyster}/>
+                <Timestamp timestamp={time} factors={factors}/>
             </div>
         {:else}
             <div 
